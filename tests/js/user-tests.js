@@ -55,6 +55,7 @@ function assertIsUser(user) {
   TestCase.assertType(user, 'object');
   TestCase.assertType(user.token, 'string');
   TestCase.assertType(user.identity, 'string');
+  TestCase.assertType(user.custom_data, 'object');
   TestCase.assertInstanceOf(user, Realm.User);
 }
 

@@ -53,6 +53,7 @@ var TESTS = {
     EncryptionTests: require('./encryption-tests'),
     ObjectIDTests: require('./object-id-tests'),
     AliasTests: require('./alias-tests'),
+    BsonTests: require('./bson-tests'),
     // Garbagecollectiontests: require('./garbage-collection'),
 };
 
