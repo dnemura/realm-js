@@ -570,11 +570,18 @@ inline typename T::Value Value<T>::from_bson(typename T::Context ctx, const bson
     case Type::String:
         return from_string(ctx, value.operator const std::string&());
     case Type::Binary: {
-        // XXX Should this be realm binary or bson binary?
-        // Also need to be able to do something with the subtype...
         const auto& vec = value.operator const std::vector<char>&();
         const auto decoded = realm::util::base64_decode_to_vector(StringData(vec.data(), vec.size()));
-        throw std::invalid_argument("binary not supported yet"); // TODO
+        if (!decoded)
+            throw std::invalid_argument("invalid base64 in binary data");
+        auto Uint8Array = Value<T>::to_function(ctx, Object<T>::get_global(ctx, "Uint8Array"));
+        auto array = Function<T>::construct(ctx, Uint8Array, {
+            from_nonnull_binary(ctx, {decoded->data(), decoded->size()}),
+        });
+        return Object<T>::create_bson_type(ctx, "Binary", {
+            array,
+            Value<T>::from_number(ctx, 0), // TODO get subtype from `value` once it is possible.
+        });
     }
     case Type::Document:
         return from_bson(ctx, value.operator const bson::BsonDocument&());

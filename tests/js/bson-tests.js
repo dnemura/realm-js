@@ -48,7 +48,7 @@ const values = {
     //date: {$date: "2015-10-21T04:29:00.123"}, // XXX
     //date_overflow_32_bit_time_t: {$date: "2215-10-21T04:29:00.123"}, // XXX
 
-    //binary: {$binary: {base64: "c2hpYmJvbGV0aA==", subType: "0"}}, // XXX
+    binary: {$binary: {base64: "c2hpYmJvbGV0aA==", subType: "0"}}, // XXX
 
     oid: {$oid: "123456789012345678901234"},
     regex: {$regularExpression: {pattern: "match this", options: "ims"}},
