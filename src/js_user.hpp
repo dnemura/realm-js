@@ -154,7 +154,7 @@ void UserClass<T>::get_custom_data(ContextType ctx, ObjectType object, ReturnVal
     if (!custom_data)
         return_value.set_null();
 
-    return return_value.set(js::Value<T>::from_bson(ctx, *custom_data));
+    return_value.set(js::Value<T>::from_bson(ctx, *custom_data));
 }
 
 template<typename T>
