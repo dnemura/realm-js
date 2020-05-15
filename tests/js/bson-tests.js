@@ -1,18 +1,18 @@
 'use strict';
 
 const Realm = require('realm');
-import {EJSON} from 'bson';
-import {assertEqual} from './asserts';
+const {EJSON} = require('bson');
+const {assertEqual} = require('./asserts');
 
-function bson_parse(json: string): any {
+function bson_parse(json) {
     return EJSON.parse(json, {relaxed: false});
 }
 
-function realm_parse(json: string): any {
+function realm_parse(json) {
     return Realm['_bsonParseJsonForTest'](json);
 }
 
-function assert_fancy_eq(a:any, b:any) {
+function assert_fancy_eq(a, b) {
     a = EJSON.stringify(a, {relaxed:false});
     b = EJSON.stringify(b, {relaxed:false});
     if (0) { // Toggling can make debugging easier
@@ -22,7 +22,7 @@ function assert_fancy_eq(a:any, b:any) {
     assertEqual(a, b);
 }
 
-function check(val: any) {
+function check(val) {
     const json = JSON.stringify({val});
     assert_fancy_eq(realm_parse(json), bson_parse(json));
 }
