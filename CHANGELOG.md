@@ -33,7 +33,7 @@ NOTE 1: Requires MacOS v10.14 (Mojave) to build.
 x.x.x Release notes (yyyy-MM-dd)
 =============================================================
 ### Enhancements
-* None.
+* Added support for `custom_data` readonly property to `Realm.User` objects.
 
 ### Fixed
 * It was not possible to make client resync if a table contained binary data.
