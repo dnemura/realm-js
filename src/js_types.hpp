@@ -552,21 +552,25 @@ inline typename T::Value Value<T>::from_bson(typename T::Context ctx, const bson
         return from_number(ctx, double(value.operator int32_t()));
     case Type::Int64:
         // int64 needs special handling.
-        // XXX Consider using js numbers for values within [-2^52, 2^52)
+        // TODO: Consider using plain js numbers for values within [-2^52, 2^52).
         return Object<T>::create_bson_type(ctx, "Long", {
-            Value<T>::from_string(ctx, std::to_string(value.operator int64_t())),
+            Value<T>::from_number(ctx, int32_t(value.operator int64_t())), // low
+            Value<T>::from_number(ctx, int32_t(value.operator int64_t() >> 32)), // high
         });
     case Type::Decimal128:
         return from_decimal128(ctx, value.operator Decimal128());
     case Type::ObjectId:
         return from_object_id(ctx, value.operator ObjectId());
-    case Type::Timestamp:
-        // XXX this is wrong. Should not be creating a JS Date!
-        // See https://github.com/realm/realm-object-store/pull/1005
-        return from_timestamp(ctx, value.operator Timestamp());
     case Type::Datetime:
-        // TODO adjust after https://github.com/realm/realm-object-store/pull/1005
-        return from_timestamp(ctx, Timestamp(value.operator bson::Datetime().seconds_since_epoch, 0));
+        return from_timestamp(ctx, value.operator Timestamp());
+    case Type::Timestamp: {
+        auto mts = value.operator bson::MongoTimestamp();
+        return Object<T>::create_bson_type(ctx, "Timestamp", {
+            // The constructor takes the arguments "backwards" from standard order.
+            Value<T>::from_number(ctx, mts.increment),
+            Value<T>::from_number(ctx, mts.seconds),
+        });
+    }
     case Type::String:
         return from_string(ctx, value.operator const std::string&());
     case Type::Binary: {
